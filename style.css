@@ -363,10 +363,10 @@ body {
   .title-page h1 { font-size:2.2rem; }
   .book-header h2 { font-size:1.8rem; }
   .header-subtitle { display:none; }
-  .verse-dual { grid-template-columns:1fr; gap:4px; }
-  .verse-heb { order:1; padding:0; }
-  .verse-center { order:0; flex-direction:row; gap:8px; border:none; padding:0 0 2px; min-height:auto; }
-  .verse-eng { order:2; padding:0; }
+  .verse-dual { grid-template-columns:1fr 28px 1fr; gap:4px; }
+    .verse-heb { padding:0 6px 0 0; }
+    .verse-center { padding-top:2px; }
+    .verse-eng { padding:0 0 0 6px; }
   .inter-phrase .inter-eng { max-width:160px; }
 }
 @media (max-width:480px) {
