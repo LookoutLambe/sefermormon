@@ -181,7 +181,7 @@ function showTitlePage() {
     '<div class="subtitle">' + (currentLang === "en" ? "Another Testament of Jesus Christ" : "עדות אחרת ישוע המשיח") + '</div>' +
     '<div class="title-divider"></div>' +
     '<div class="translator">' + (currentLang === "en" ? "Translated into Biblical Hebrew by" : "תרגם ללשון המקרא בידי") + '</div>' +
-    '<div class="translator" style="font-weight:700;font-size:1.2rem;margin-top:4px">כריס לאמב / Chris Lamb</div>' +
+    '<div class="translator" style="font-weight:700;font-size:1.2rem;margin-top:4px">כריס לאמב</div>' +
     '<div class="edition">מהדורה עברית ראשונה · תשפ״ו</div>' +
     '</div>' +
     '<div style="text-align:center;padding:32px 0">' +
