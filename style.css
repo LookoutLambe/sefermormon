@@ -90,7 +90,7 @@ body {
 .lang-toggle {
   display:flex; border:1px solid rgba(212,175,55,0.25); border-radius:8px; overflow:hidden;
 }
-.lang-btn {
+.lang-btn { text-decoration:none;
   background:none; border:none; color:var(--sidebar-text);
   padding:6px 10px; cursor:pointer; font-size:0.75rem;
   font-family:var(--font-body); transition:all 0.2s;
