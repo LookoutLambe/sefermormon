@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ספר מורמון — מהדורה עברית</title>
+<meta name="description" content="The Book of Mormon in Classical Biblical Hebrew with parallel English text. A bilingual reader.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-right">
+    <button class="btn-icon" id="menuBtn" title="תפריט">&#9776;</button>
+    <span class="header-title">ספר מורמון</span>
+    <span class="header-subtitle">מהדורה עברית</span>
+  </div>
+  <div class="header-left">
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="he">עברית</button>
+      <button class="lang-btn" data-lang="dual">עב / En</button>
+      <button class="lang-btn" data-lang="inter">שורה</button>
+      <button class="lang-btn" data-lang="en">English</button>
+    </div>
+    <div class="font-controls">
+      <button class="btn-icon" id="fontDown">א-</button>
+      <button class="btn-icon" id="fontUp">א+</button>
+    </div>
+    <button class="btn-icon" id="themeBtn">&#9684;</button>
+  </div>
+</header>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="sidebar-overlay" id="overlay"></div>
+<nav class="sidebar" id="sidebar">
+  <div class="search-box">
+    <input class="search-input" id="searchInput" type="text" placeholder="חיפוש בטקסט...">
+  </div>
+  <div class="search-results" id="searchResults"></div>
+  <div id="navContent"></div>
+</nav>
+
+<main class="main">
+  <div class="content" id="content"><div class="loading">טוען...</div></div>
+</main>
+
+<button class="scroll-top" id="scrollTop">&#8593;</button>
+
+<script src="app.js"></script>
+</body>
+</html>
