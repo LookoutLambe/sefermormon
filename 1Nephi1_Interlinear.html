@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ספר נפי א׳ — Interlinear</title>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf8f2;
+  --bg-deep: #f0ece0;
+  --ink: #1a1a1a;
+  --ink-light: #444;
+  --accent: #c8a84e;
+  --accent-light: #d4b96a;
+  --rule: #d6ceb8;
+  --rule-light: #e8e2d4;
+  --gloss: #333;
+  --verse-num: #c8a84e;
+  --highlight: rgba(200, 168, 78, 0.10);
+  --header-bg: #1e2233;
+  --header-text: #c8a84e;
+  --row-alt: #fdf8eb;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'David', 'Frank Ruhl Libre', serif;
+  min-height: 100vh;
+}
+
+/* Page container — book-like margins */
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 60px 80px;
+  background: #faf8f2;
+  min-height: 100vh;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.04), 4px 0 20px rgba(0,0,0,0.04);
+  position: relative;
+}
+
+/* Subtle inner border like a printed page */
+.page::before {
+  content: '';
+  position: absolute;
+  top: 25px; right: 40px; bottom: 25px; left: 40px;
+  border: 1px solid var(--rule-light);
+  pointer-events: none;
+}
+
+/* Book title header */
+.book-header {
+  text-align: center;
+  padding: 20px 0 10px;
+  margin-bottom: 8px;
+}
+
+.book-title {
+  font-size: 2.4em;
+  font-weight: 700;
+  color: var(--header-bg);
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+
+.book-subtitle {
+  font-size: 1.1em;
+  font-weight: 400;
+  color: var(--ink-light);
+  letter-spacing: 0.06em;
+}
+
+/* Decorative rule */
+.ornament {
+  text-align: center;
+  padding: 6px 0 12px;
+  color: var(--accent);
+  font-size: 1.2em;
+  letter-spacing: 0.5em;
+}
+
+/* Colophon / synopsis block */
+.colophon {
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  background: rgba(255,252,244,0.5);
+}
+
+.colophon-label {
+  text-align: center;
+  font-size: 0.85em;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  margin-bottom: 12px;
+  font-family: 'Crimson Pro', serif;
+}
+
+/* Chapter heading */
+.chapter-heading {
+  text-align: center;
+  padding: 16px 0 20px;
+  border-bottom: 2px solid var(--rule);
+  margin-bottom: 24px;
+}
+
+.chapter-heading h2 {
+  font-size: 1.6em;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.06em;
+}
+
+/* ===== INTERLINEAR CORE ===== */
+.verse {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rule-light);
+  transition: background 0.2s;
+}
+
+.verse:hover {
+  background: var(--highlight);
+}
+
+.verse:nth-child(even) {
+  background: var(--row-alt);
+}
+
+.verse:nth-child(even):hover {
+  background: rgba(200, 168, 78, 0.14);
+}
+
+.verse:last-child {
+  border-bottom: none;
+}
+
+/* Verse number column */
+.verse-num {
+  flex-shrink: 0;
+  width: 32px;
+  text-align: center;
+  font-size: 1.1em;
+  font-weight: 700;
+  color: var(--verse-num);
+  padding-top: 6px;
+  line-height: 1;
+  user-select: none;
+}
+
+/* Word flow area */
+.word-flow {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  align-items: flex-start;
+  direction: rtl;
+}
+
+/* Individual word unit */
+.word-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3px 2px 6px;
+  min-width: 30px;
+  transition: background 0.15s;
+  border-radius: 3px;
+  cursor: default;
+}
+
+.word-unit:hover {
+  background: rgba(139, 105, 20, 0.08);
+}
+
+/* Hebrew word — top */
+.hw {
+  font-size: 1.85em;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink);
+  white-space: nowrap;
+  direction: rtl;
+  text-align: center;
+}
+
+/* English gloss — bottom */
+.gl {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.72em;
+  font-style: italic;
+  color: var(--gloss);
+  line-height: 1.2;
+  text-align: center;
+  direction: ltr;
+  white-space: nowrap;
+  margin-top: 1px;
+  opacity: 0.85;
+}
+
+/* Colophon uses slightly smaller sizing */
+.colophon .word-unit .hw {
+  font-size: 1.15em;
+}
+
+.colophon .word-unit .gl {
+  font-size: 0.65em;
+}
+
+/* Sof-pasuq marker */
+.word-unit.sof .hw::after {
+  content: ' ׃';
+  color: var(--rule);
+}
+
+/* Controls bar */
+.controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1e2233;
+  color: #c8a84e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 20px;
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.9em;
+  z-index: 100;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.15);
+}
+
+.controls button {
+  background: transparent;
+  border: 1px solid #3a3f55;
+  color: #c8a84e;
+  padding: 5px 14px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.95em;
+  transition: all 0.2s;
+}
+
+.controls button:hover {
+  background: #2a2f44;
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.controls button.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #1e2233;
+  font-weight: 600;
+}
+
+.controls label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.controls input[type="range"] {
+  width: 80px;
+  accent-color: var(--accent-light);
+}
+
+/* Hide glosses mode */
+body.hide-gloss .gl { display: none; }
+body.hide-gloss .word-unit { padding-bottom: 3px; }
+
+/* English-only mode */
+body.english-only .hw { display: none; }
+body.english-only .gl {
+  font-size: 1em;
+  font-style: normal;
+  opacity: 1;
+  color: var(--ink);
+}
+body.english-only .word-flow { direction: ltr; }
+body.english-only .word-unit { padding: 2px 1px 4px; }
+
+/* Responsive */
+@media (max-width: 700px) {
+  .page { padding: 20px 18px 70px; }
+  .page::before { display: none; }
+  .hw { font-size: 1.25em; }
+  .gl { font-size: 0.68em; }
+  .verse { gap: 8px; }
+  .word-flow { gap: 3px 10px; }
+  .controls { padding: 8px 12px; gap: 12px; font-size: 0.82em; }
+}
+
+/* Print styles */
+@media print {
+  .controls { display: none; }
+  .page { box-shadow: none; padding: 20px 40px; }
+  .page::before { display: none; }
+  .verse:hover { background: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="page" id="page">
+
+  <div class="book-header">
+    <div class="book-title">נֶפִי א׳</div>
+    <div class="book-subtitle">מַלְכוּתוֹ וַעֲבוֹדָתוֹ</div>
+  </div>
+
+  <div class="ornament">· · ◆ · ·</div>
+
+  <div class="colophon">
+    <div class="colophon-label">SYNOPSIS</div>
+    <div class="word-flow" id="colophon-flow"></div>
+  </div>
+
+  <div class="chapter-heading">
+    <h2>פרק א</h2>
+  </div>
+
+  <div id="verses"></div>
+
+</div>
+
+<div class="controls">
+  <button id="btn-inter" class="active" onclick="setMode('inter')">Interlinear</button>
+  <button id="btn-heb" onclick="setMode('heb')">Hebrew Only</button>
+  <button id="btn-eng" onclick="setMode('eng')">English Only</button>
+  <span style="color:#3a3f55">│</span>
+  <label>Size <input type="range" id="sizeSlider" min="70" max="150" value="100" oninput="setSize(this.value)"></label>
+</div>
+
+<script>
+// ============================================================
+// INTERLINEAR DATA — 1 Nephi 1
+// Each entry: [hebrew, gloss]  |  "׃" marks sof-pasuq
+// ============================================================
+
+const colophonWords = [
+  ["וְאֵלֶּה","and-these"],
+  ["דִּבְרֵי","account-of"],
+  ["לֶחִי","Lehi"],
+  ["וְאִשְׁתּוֹ","and-his-wife"],
+  ["שָׂרַיָה","Sariah"],
+  ["וְאַרְבַּעַת","and-four-of"],
+  ["בָּנָיו","his-sons"],
+  ["אֲשֶׁר","whose"],
+  ["שְׁמוֹתָם","their-names"],
+  ["(הָחֵל","(beginning"],
+  ["בַּבְּכוֹר)","with-the-firstborn)"],
+  ["לָמָּן","Laman"],
+  ["לְמוּאֵל","Lemuel"],
+  ["סָם","Sam"],
+  ["וְנֶפִי","and-Nephi"],
+  ["׃",""],
+  ["וַיַּזְהֵר","and-warned"],
+  ["יְהוָה","YHWH"],
+  ["אֶת־לֶחִי","Lehi"],
+  ["לָצֵאת","to-go-out"],
+  ["מֵאֶרֶץ","from-land-of"],
+  ["יְרוּשָׁלַיִם","Jerusalem"],
+  ["כִּי","because"],
+  ["נִבָּא","he-prophesied"],
+  ["אֶל־הָעָם","to-the-people"],
+  ["עַל־עֲוֺנָם","concerning-their-iniquity"],
+  ["וַיְבַקְשׁוּ","and-they-sought"],
+  ["לָקַחַת","to-take"],
+  ["אֶת־נַפְשׁוֹ","his-life"],
+  ["׃",""],
+  ["וַיֵּלֶךְ","and-he-went"],
+  ["דֶּרֶךְ","journey-of"],
+  ["שְׁלֹשֶׁת","three"],
+  ["יָמִים","days"],
+  ["בַּמִּדְבָּר","in-the-wilderness"],
+  ["עִם־מִשְׁפַּחְתּוֹ","with-his-family"],
+  ["׃",""],
+  ["וַיִּקַּח","and-took"],
+  ["נֶפִי","Nephi"],
+  ["אֶת־אֶחָיו","his-brothers"],
+  ["וַיָּשָׁב","and-returned"],
+  ["אֶל־אֶרֶץ","to-land-of"],
+  ["יְרוּשָׁלַיִם","Jerusalem"],
+  ["אַחֲרֵי","after"],
+  ["דִּבְרֵי","record-of"],
+  ["הַיְּהוּדִים","the-Jews"],
+  ["׃",""],
+  ["דִּבְרֵי","account-of"],
+  ["עִנּוּיֵיהֶם","their-afflictions"],
+  ["׃",""],
+  ["וַיִּקְחוּ","and-they-took"],
+  ["אֶת־בְּנוֹת","daughters-of"],
+  ["יִשְׁמָעֵאל","Ishmael"],
+  ["לְנָשִׁים","for-wives"],
+  ["׃",""],
+  ["וַיִּקְחוּ","and-they-took"],
+  ["אֶת־מִשְׁפְּחוֹתֵיהֶם","their-families"],
+  ["וַיֵּצְאוּ","and-went-out"],
+  ["הַמִּדְבָּרָה","wilderness-ward"],
+  ["׃",""],
+  ["עִנּוּיֵיהֶם","their-afflictions"],
+  ["וְצָרוֹתֵיהֶם","and-their-troubles"],
+  ["בַּמִּדְבָּר","in-the-wilderness"],
+  ["׃",""],
+  ["מַסְעֵיהֶם","their-journeys"],
+  ["׃",""],
+  ["וַיָּבֹאוּ","and-they-came"],
+  ["אֶל־הַמַּיִם","to-the-waters"],
+  ["הַגְּדוֹלִים","the-great"],
+  ["׃",""],
+  ["וַיִּמְרְדוּ","and-rebelled"],
+  ["אֲחֵי","brothers-of"],
+  ["נֶפִי","Nephi"],
+  ["בּוֹ","against-him"],
+  ["׃",""],
+  ["וַיְבַלְבְּלֵם","and-he-confounded-them"],
+  ["וַיִּבֶן","and-built"],
+  ["אֳנִיָּה","a-ship"],
+  ["׃",""],
+  ["וַיִּקְרְאוּ","and-they-called"],
+  ["שֵׁם","name-of"],
+  ["הַמָּקוֹם","the-place"],
+  ["שֶׁפַע","Bountiful"],
+  ["׃",""],
+  ["וַיַּעַבְרוּ","and-they-crossed"],
+  ["אֶת־הַמַּיִם","the-waters"],
+  ["הַגְּדוֹלִים","the-great"],
+  ["אֶל־אֶרֶץ","to-land-of"],
+  ["הַנַּחֲלָה","the-inheritance"],
+  ["וְכֵן","and-so"],
+  ["הָלְאָה","onward"],
+  ["׃",""],
+  ["עַל־פִּי","according-to"],
+  ["דִּבְרֵי","words-of"],
+  ["נֶפִי","Nephi"],
+  ["אוֹ","or"],
+  ["בְּמִלִּים","in-words"],
+  ["אֲחֵרוֹת","other"],
+  ["אָנֹכִי","I"],
+  ["נֶפִי","Nephi"],
+  ["כָּתַבְתִּי","wrote"],
+  ["אֶת־הַדְּבָרִים","the-things"],
+  ["הָאֵלֶּה","these"],
+  ["׃",""]
+];
+
+const verses = [
+  { num:"א", words:[
+    ["אָנֹכִי","I"],
+    ["נֶפִי","Nephi"],
+    ["בֶּן־אָב","son-of-a-father"],
+    ["חָסִיד","goodly"],
+    ["וּלְאֵם","and-of-a-mother"],
+    ["חֲסִידָה","goodly"],
+    ["אֲשֶׁר","who"],
+    ["חִנְּכוּנִי","trained-me"],
+    ["בְּמוּסַר","in-discipline-of"],
+    ["אָבִי","my-father"],
+    ["וּבְדַעְתּוֹ","and-in-his-knowledge"],
+    ["רַב־עֳנִי","much-affliction"],
+    ["רָאוּ","saw"],
+    ["עֵינַי","my-eyes"],
+    ["בִּימֵי","in-days-of"],
+    ["חַיַּי","my-life"],
+    ["וְאַף","and-yet"],
+    ["לֹא־עֲזָבַנִי","not-forsook-me"],
+    ["חֶסֶד","lovingkindness-of"],
+    ["יְהוָה","YHWH"],
+    ["כָּל־הַיָּמִים","all-the-days"],
+    ["וַיִּתֶּן־לִי","and-gave-to-me"],
+    ["אֱלֹהִים","God"],
+    ["בִּינָה","understanding"],
+    ["לָדַעַת","to-know"],
+    ["סוֹדוֹ","His-counsel"],
+    ["וְחַסְדּוֹ","and-His-lovingkindness"],
+    ["עַל־כֵּן","therefore"],
+    ["אָשִׂימָה","I-set"],
+    ["אֶת־דִּבְרֵי","the-words-of"],
+    ["יָמַי","my-days"],
+    ["בַּסֵּפֶר","in-the-book"],
+    ["׃",""]
+  ]},
+  { num:"ב", words:[
+    ["וְאֶכְתֹּב","and-I-write"],
+    ["בִּלְשׁוֹן","in-tongue-of"],
+    ["אָבִי","my-father"],
+    ["בִּכְתַב","in-script-of"],
+    ["מִצְרַיִם","Egypt"],
+    ["אֲשֶׁר","which"],
+    ["שָׂמוּ","employed"],
+    ["אֲבוֹתַי","my-fathers"],
+    ["לִדְבַר","to-speak"],
+    ["יְהוּדִית","Judean"],
+    ["׃",""]
+  ]},
+  { num:"ג", words:[
+    ["וְיָדַעְתִּי","and-I-know"],
+    ["כִּי","that"],
+    ["אֱמֶת","truth"],
+    ["הוּא","it-is"],
+    ["הַסֵּפֶר","the-book"],
+    ["אֲשֶׁר","which"],
+    ["אֶכְתֹּב","I-write"],
+    ["בְּיָדִי","by-my-hand"],
+    ["וְכָתוּב","and-written"],
+    ["הוּא","it-is"],
+    ["כְּדַעְתִּי","as-my-knowledge"],
+    ["׃",""]
+  ]},
+  { num:"ד", words:[
+    ["וַיְהִי","and-it-was"],
+    ["בִּשְׁנַת","in-year-of"],
+    ["אַחַת","one"],
+    ["לְמַלְכוּת","of-reign-of"],
+    ["צִדְקִיָּהוּ","Zedekiah"],
+    ["מֶלֶךְ","king-of"],
+    ["יְהוּדָה","Judah"],
+    ["וְלֵחִי","and-Lehi"],
+    ["אָבִי","my-father"],
+    ["הָיָה","was"],
+    ["יֹשֵׁב","dwelling"],
+    ["בִּירוּשָׁלַיִם","in-Jerusalem"],
+    ["כָּל־יָמָיו","all-his-days"],
+    ["וּבַשָּׁנָה","and-in-the-year"],
+    ["הַהִיא","that"],
+    ["בָּאוּ","came"],
+    ["נְבִיאִים","prophets"],
+    ["רַבִּים","many"],
+    ["וַיִּנָּבְאוּ","and-prophesied"],
+    ["אֶל־הָעָם","to-the-people"],
+    ["לֵאמֹר","saying"],
+    ["שׁוּבוּ","return!"],
+    ["פֶּן־תִּשָּׁחֵת","lest-be-destroyed"],
+    ["הָעִיר","the-city"],
+    ["יְרוּשָׁלַיִם","Jerusalem"],
+    ["הַגְּדוֹלָה","the-great"],
+    ["׃",""]
+  ]},
+  { num:"ה", words:[
+    ["וַיֵּצֵא","and-went-out"],
+    ["אָבִי","my-father"],
+    ["לֵחִי","Lehi"],
+    ["וַיִּתְפַּלֵּל","and-prayed"],
+    ["אֶל־יְהוָה","to-YHWH"],
+    ["בְּכָל־לִבּוֹ","with-all-his-heart"],
+    ["בְּעַד","on-behalf-of"],
+    ["עַמּוֹ","his-people"],
+    ["׃",""]
+  ]},
+  { num:"ו", words:[
+    ["וַיְהִי","and-it-was"],
+    ["בְּהִתְפַּלְלוֹ","as-he-prayed"],
+    ["אֶל־יְהוָה","to-YHWH"],
+    ["וַיָּבֹא","and-came"],
+    ["עַמּוּד־אֵשׁ","pillar-of-fire"],
+    ["וַיִּשְׁכֹּן","and-dwelt"],
+    ["עַל־הַצּוּר","upon-the-rock"],
+    ["לְפָנָיו","before-him"],
+    ["וַיַּרְא","and-he-saw"],
+    ["וַיָּשָׁמַע","and-heard"],
+    ["אֵת","[ACC]"],
+    ["הַדְּבָרִים","the-things"],
+    ["הָרַבִּים","the-many"],
+    ["וּמִפְּנֵי","and-because-of"],
+    ["אֲשֶׁר","that-which"],
+    ["רָאָה","he-saw"],
+    ["וְשָׁמַע","and-heard"],
+    ["וַיֶּחֱרַד","and-he-trembled"],
+    ["וַיִּרְעַד","and-quaked"],
+    ["מְאֹד","exceedingly"],
+    ["׃",""]
+  ]},
+  { num:"ז", words:[
+    ["וַיָּשָׁב","and-he-returned"],
+    ["אֶל־בֵּיתוֹ","to-his-house"],
+    ["בִּירוּשָׁלַיִם","in-Jerusalem"],
+    ["וַיִּפֹּל","and-fell"],
+    ["עַל־מִשְׁכָּבוֹ","upon-his-bed"],
+    ["וַיִּגְבְּרוּ","and-overcame"],
+    ["עָלָיו","upon-him"],
+    ["רוּחַ","spirit-of"],
+    ["יְהוָה","YHWH"],
+    ["וְהַדְּבָרִים","and-the-things"],
+    ["אֲשֶׁר","which"],
+    ["רָאָה","he-saw"],
+    ["׃",""]
+  ]},
+  { num:"ח", words:[
+    ["וַיִּנָּשֵׂא","and-he-was-carried"],
+    ["בַּמַּחֲזֶה","in-the-vision"],
+    ["וַיַּרְא","and-saw"],
+    ["אֶת־הַשָּׁמַיִם","the-heavens"],
+    ["נִפְתָּחִים","opened"],
+    ["וַיַּחְשֹׁב","and-thought"],
+    ["כִּי","that"],
+    ["רָאָה","he-saw"],
+    ["אֶת־אֱלֹהִים","God"],
+    ["יוֹשֵׁב","sitting"],
+    ["עַל־כִּסְאוֹ","upon-His-throne"],
+    ["וְסָבִיבָיו","and-surrounding-Him"],
+    ["הֲמוֹן","multitude-of"],
+    ["מַלְאָכִים","angels"],
+    ["מְזַמְּרִים","singing"],
+    ["וּמְהַלְּלִים","and-praising"],
+    ["אֶת־אֱלֹהֵיהֶם","their-God"],
+    ["׃",""]
+  ]},
+  { num:"ט", words:[
+    ["וַיַּרְא","and-he-saw"],
+    ["אֶחָד","one"],
+    ["יוֹרֵד","descending"],
+    ["מִתּוֹךְ","from-midst-of"],
+    ["הַשָּׁמַיִם","the-heavens"],
+    ["וַיַּרְא","and-saw"],
+    ["כִּי","that"],
+    ["נֹגְהוֹ","his-brightness"],
+    ["רַב","great"],
+    ["מֵאוֹר","than-light-of"],
+    ["הַשֶּׁמֶשׁ","the-sun"],
+    ["בַּצָּהֳרָיִם","at-noonday"],
+    ["׃",""]
+  ]},
+  { num:"י", words:[
+    ["וַיַּרְא","and-he-saw"],
+    ["גַּם","also"],
+    ["שְׁנֵים עָשָׂר","twelve"],
+    ["אֲחֵרִים","others"],
+    ["הֹלְכִים","walking"],
+    ["אַחֲרָיו","after-him"],
+    ["וְנָגְהָם","and-their-brightness"],
+    ["רַב","great"],
+    ["מִכּוֹכְבֵי","than-stars-of"],
+    ["הָרָקִיעַ","the-firmament"],
+    ["׃",""]
+  ]},
+  { num:"יא", words:[
+    ["וַיֵּרְדוּ","and-they-descended"],
+    ["וַיֵּלְכוּ","and-went"],
+    ["עַל־פְּנֵי","upon-face-of"],
+    ["הָאָרֶץ","the-earth"],
+    ["וַיִּגַּשׁ","and-drew-near"],
+    ["הָרִאשׁוֹן","the-first"],
+    ["וַיַּעֲמֹד","and-stood"],
+    ["לִפְנֵי","before"],
+    ["אָבִי","my-father"],
+    ["וַיִּתֶּן־לוֹ","and-gave-to-him"],
+    ["סֵפֶר","a-book"],
+    ["וַיְצַוֵּהוּ","and-commanded-him"],
+    ["לִקְרֹא","to-read"],
+    ["׃",""]
+  ]},
+  { num:"יב", words:[
+    ["וַיְהִי","and-it-was"],
+    ["בְּקָרְאוֹ","as-he-read"],
+    ["וַיִּמָּלֵא","and-was-filled"],
+    ["רוּחַ","spirit-of"],
+    ["יְהוָה","YHWH"],
+    ["׃",""]
+  ]},
+  { num:"יג", words:[
+    ["וַיִּקְרָא","and-he-cried-out"],
+    ["לֵאמֹר","saying"],
+    ["אוֹי","woe"],
+    ["אוֹי","woe"],
+    ["לִירוּשָׁלַיִם","to-Jerusalem"],
+    ["כִּי","for"],
+    ["רָאִיתִי","I-have-seen"],
+    ["תּוֹעֲבוֹתָיִךְ","your-abominations"],
+    ["רַבּוֹת","many"],
+    ["וּדְבָרִים","and-things"],
+    ["רַבִּים","many"],
+    ["קָרָא","cried"],
+    ["אָבִי","my-father"],
+    ["עַל","concerning"],
+    ["יְרוּשָׁלַיִם","Jerusalem"],
+    ["כִּי","that"],
+    ["תִשָּׁחֵת","it-shall-be-destroyed"],
+    ["וְיֹשְׁבֶיהָ","and-its-inhabitants"],
+    ["רַבִּים","many"],
+    ["יָמוּתוּ","shall-die"],
+    ["בֶּחֶרֶב","by-the-sword"],
+    ["וְרַבִּים","and-many"],
+    ["יָגְלוּ","shall-go-into-exile"],
+    ["אֶל־בָּבֶל","to-Babylon"],
+    ["׃",""]
+  ]},
+  { num:"יד", words:[
+    ["וַיְהִי","and-it-was"],
+    ["כַּאֲשֶׁר","when"],
+    ["קָרָא","read"],
+    ["אָבִי","my-father"],
+    ["וַיַּרְא","and-saw"],
+    ["דְּבָרִים","things"],
+    ["גְּדֹלִים","great"],
+    ["וְנִפְלָאִים","and-marvelous"],
+    ["וַיִּקְרָא","and-cried-out"],
+    ["אֶל־יְהוָה","to-YHWH"],
+    ["לֵאמֹר","saying"],
+    ["גְּדֹלִים","great"],
+    ["וְנִפְלָאִים","and-marvelous"],
+    ["מַעֲשֶׂיךָ","Your-works"],
+    ["יְהוָה","YHWH"],
+    ["אֱלֹהֵי","God-of"],
+    ["צְבָאוֹת","hosts"],
+    ["כִּסְאֲךָ","Your-throne"],
+    ["רָם","is-high"],
+    ["בַּשָּׁמַיִם","in-the-heavens"],
+    ["וְכֹחֲךָ","and-Your-power"],
+    ["וְטוּבְךָ","and-Your-goodness"],
+    ["וְחַסְדְּךָ","and-Your-lovingkindness"],
+    ["עַל־כָּל","upon-all"],
+    ["יֹשְׁבֵי־הָאָרֶץ","inhabitants-of-the-earth"],
+    ["וּבְחַסְדְּךָ","and-in-Your-lovingkindness"],
+    ["לֹא־תִתֵּן","You-give-not"],
+    ["לַבָּאִים","to-those-coming"],
+    ["אֵלֶיךָ","unto-You"],
+    ["לֶאֱבֹד","to-perish"],
+    ["׃",""]
+  ]},
+  { num:"טו", words:[
+    ["וּכְדְבָרִים","and-with-words"],
+    ["הָאֵלֶּה","these"],
+    ["הִלֵּל","praised"],
+    ["אָבִי","my-father"],
+    ["אֶת־אֱלֹהָיו","his-God"],
+    ["וַתָּגֶל","and-rejoiced"],
+    ["נַפְשׁוֹ","his-soul"],
+    ["וַיִּמָּלֵא","and-was-filled"],
+    ["כָל־לִבּוֹ","all-his-heart"],
+    ["עַל","because-of"],
+    ["הַדְּבָרִים","the-things"],
+    ["אֲשֶׁר","which"],
+    ["הֶרְאָהוּ","showed-him"],
+    ["יְהוָה","YHWH"],
+    ["׃",""]
+  ]},
+  { num:"טז", words:[
+    ["וְעַתָּה","and-now"],
+    ["לֹא","not"],
+    ["אֶכְתֹּב","I-write"],
+    ["כָּל","all"],
+    ["דִּבְרֵי","words-of"],
+    ["אָבִי","my-father"],
+    ["כִּי","for"],
+    ["כָתַב","he-wrote"],
+    ["דְּבָרִים","things"],
+    ["רַבִּים","many"],
+    ["אֲשֶׁר","which"],
+    ["רָאָה","he-saw"],
+    ["בַּמַּרְאוֹת","in-the-visions"],
+    ["וּבַחֲלֹמוֹת","and-in-dreams"],
+    ["וְגַם","and-also"],
+    ["כָתַב","he-wrote"],
+    ["דְּבָרִים","things"],
+    ["רַבִּים","many"],
+    ["אֲשֶׁר","which"],
+    ["נִבָּא","he-prophesied"],
+    ["וְדִבֶּר","and-spoke"],
+    ["אֶל־בָּנָיו","to-his-sons"],
+    ["וְאֶת","and-[ACC]"],
+    ["כֻּלָּם","all-of-them"],
+    ["לֹא","not"],
+    ["אֶכְתֹּב","I-write"],
+    ["׃",""]
+  ]},
+  { num:"יז", words:[
+    ["אַךְ","but"],
+    ["הִנֵּה","behold"],
+    ["אֲקַצֵּר","I-abridge"],
+    ["אֶת־סֵפֶר","book-of"],
+    ["אָבִי","my-father"],
+    ["עַל","upon"],
+    ["הַלּוּחוֹת","the-plates"],
+    ["אֲשֶׁר","which"],
+    ["עָשִׂיתִי","I-made"],
+    ["בְּיָדַי","with-my-hands"],
+    ["וְאַחֲרֵי","and-after"],
+    ["קַצְּרִי","my-abridging"],
+    ["אֶת","[ACC]"],
+    ["סֵפֶר","book-of"],
+    ["אָבִי","my-father"],
+    ["אֶכְתֹּב","I-write"],
+    ["אֶת","[ACC]"],
+    ["דִּבְרֵי","words-of"],
+    ["יָמַי","my-days"],
+    ["׃",""]
+  ]},
+  { num:"יח", words:[
+    ["לָכֵן","therefore"],
+    ["רְצוֹנִי","my-desire"],
+    ["כִּי","that"],
+    ["תֵדְעוּ","you-know"],
+    ["אַחֲרֵי","after"],
+    ["הֶרְאוֹת","showing"],
+    ["יְהוָה","YHWH"],
+    ["נִפְלָאוֹת","wonders"],
+    ["רַבּוֹת","many"],
+    ["לְאָבִי","to-my-father"],
+    ["לֵחִי","Lehi"],
+    ["עַל","concerning"],
+    ["יְרוּשָׁלַיִם","Jerusalem"],
+    ["אֲשֶׁר","which"],
+    ["תִּשָּׁחֵת","shall-be-destroyed"],
+    ["הִנֵּה","behold"],
+    ["יָצָא","he-went-forth"],
+    ["בְּקֶרֶב","among"],
+    ["הָעָם","the-people"],
+    ["וַיָּחֶל","and-began"],
+    ["לְהִנָּבֵא","to-prophesy"],
+    ["וּלְהַגִּיד","and-to-declare"],
+    ["לָהֶם","to-them"],
+    ["הַדְּבָרִים","the-things"],
+    ["אֲשֶׁר","which"],
+    ["גַּם","both"],
+    ["רָאָה","he-saw"],
+    ["וְגַם","and-also"],
+    ["שָׁמַע","heard"],
+    ["׃",""]
+  ]},
+  { num:"יט", words:[
+    ["וַיַּלְעִגוּ","and-mocked"],
+    ["לוֹ","him"],
+    ["הַיְּהוּדִים","the-Jews"],
+    ["עַל","on-account-of"],
+    ["דְּבָרָיו","his-words"],
+    ["אֲשֶׁר","which"],
+    ["הֵעִיד","he-testified"],
+    ["עֲלֵיהֶם","against-them"],
+    ["כִּי","for"],
+    ["הֵעִיד","he-testified"],
+    ["בֶּאֱמֶת","in-truth"],
+    ["עַל","concerning"],
+    ["רִשְׁעָם","their-wickedness"],
+    ["וְתוֹעֲבוֹתֵיהֶם","and-their-abominations"],
+    ["וְהֵעִיד","and-testified"],
+    ["כִּי","that"],
+    ["הַדְּבָרִים","the-things"],
+    ["אֲשֶׁר","which"],
+    ["רָאָה","he-saw"],
+    ["וְשָׁמַע","and-heard"],
+    ["וְגַם","and-also"],
+    ["קָרָא","read"],
+    ["בַּסֵּפֶר","in-the-book"],
+    ["גִּלּוּ","revealed"],
+    ["עַל","concerning"],
+    ["בּוֹא","coming-of"],
+    ["הַמָּשִׁיחַ","the-Messiah"],
+    ["וּגְאֻלַּת","and-redemption-of"],
+    ["הָעוֹלָם","the-world"],
+    ["׃",""]
+  ]},
+  { num:"כ", words:[
+    ["וַיְהִי","and-it-was"],
+    ["כִּשְׁמֹעַ","when-heard"],
+    ["הַיְּהוּדִים","the-Jews"],
+    ["אֶת","[ACC]"],
+    ["הַדְּבָרִים","the-things"],
+    ["הָאֵלֶּה","these"],
+    ["וַיִּקְצְפוּ","and-were-angry"],
+    ["עָלָיו","against-him"],
+    ["כַּאֲשֶׁר","as"],
+    ["עָשׂוּ","they-did"],
+    ["לַנְּבִיאִים","to-the-prophets"],
+    ["הָרִאשֹׁנִים","the-former"],
+    ["אֲשֶׁר","whom"],
+    ["גֵּרְשׁוּ","they-cast-out"],
+    ["וְסָקְלוּ","and-stoned"],
+    ["וְהָרָגוּ","and-killed"],
+    ["וַיְבַקְשׁוּ","and-sought"],
+    ["גַּם","also"],
+    ["אֶת","[ACC]"],
+    ["נַפְשׁוֹ","his-life"],
+    ["לְקַחְתָּהּ","to-take-it"],
+    ["אַךְ","but"],
+    ["הִנֵּה","behold"],
+    ["אֲנִי","I"],
+    ["נֶפִי","Nephi"],
+    ["אַרְאֶה","will-show"],
+    ["לָכֶם","to-you"],
+    ["כִּי","that"],
+    ["חַסְדֵי","lovingkindnesses-of"],
+    ["יְהוָה","YHWH"],
+    ["עַל","upon"],
+    ["כָּל","all"],
+    ["בְּחִירָיו","His-chosen"],
+    ["עַל","on-account-of"],
+    ["אֱמוּנָתָם","their-faith"],
+    ["לַעֲשׂוֹתָם","making-them"],
+    ["גִּבֹּרֵי","mighty-in"],
+    ["תְשׁוּעָה","deliverance"],
+    ["׃",""]
+  ]}
+];
+
+// ============================================================
+// RENDERER
+// ============================================================
+
+function makeWordUnit(h, e, isSof) {
+  if (h === '׃') return ''; // skip standalone sof-pasuq
+  const div = document.createElement('div');
+  div.className = 'word-unit' + (isSof ? ' sof' : '');
+  div.innerHTML = `<span class="hw">${h}</span><span class="gl">${e}</span>`;
+  return div;
+}
+
+function renderColophon() {
+  const container = document.getElementById('colophon-flow');
+  colophonWords.forEach(([h, e], i) => {
+    if (h === '׃') return;
+    // Check if next word is sof-pasuq
+    const isSof = (i + 1 < colophonWords.length && colophonWords[i+1][0] === '׃');
+    const el = makeWordUnit(h, e, isSof);
+    if (el) container.appendChild(el);
+  });
+}
+
+function renderVerses() {
+  const container = document.getElementById('verses');
+  verses.forEach(v => {
+    const verseDiv = document.createElement('div');
+    verseDiv.className = 'verse';
+
+    const numDiv = document.createElement('div');
+    numDiv.className = 'verse-num';
+    numDiv.textContent = v.num;
+    verseDiv.appendChild(numDiv);
+
+    const flowDiv = document.createElement('div');
+    flowDiv.className = 'word-flow';
+
+    v.words.forEach(([h, e], i) => {
+      if (h === '׃') return;
+      const isSof = (i + 1 < v.words.length && v.words[i+1][0] === '׃');
+      const el = makeWordUnit(h, e, isSof);
+      if (el) flowDiv.appendChild(el);
+    });
+
+    verseDiv.appendChild(flowDiv);
+    container.appendChild(verseDiv);
+  });
+}
+
+// MODE SWITCHING
+function setMode(mode) {
+  document.body.classList.remove('hide-gloss', 'english-only');
+  document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
+
+  if (mode === 'heb') {
+    document.body.classList.add('hide-gloss');
+    document.getElementById('btn-heb').classList.add('active');
+  } else if (mode === 'eng') {
+    document.body.classList.add('english-only');
+    document.getElementById('btn-eng').classList.add('active');
+  } else {
+    document.getElementById('btn-inter').classList.add('active');
+  }
+}
+
+function setSize(val) {
+  document.getElementById('page').style.fontSize = val + '%';
+}
+
+// INIT
+renderColophon();
+renderVerses();
+</script>
+
+</body>
+</html>
